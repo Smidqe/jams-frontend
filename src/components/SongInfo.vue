@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { type Tags } from "@/types";
+//biome-ignore-all lint/correctness/noUnusedVariables: They are needed */
+//biome-ignore-all lint/correctness/noUnusedImports: They are needed */
+
+import type { Tags } from "@/types";
 import LabeledIcon from "./ui/LabeledIcon.vue";
 
 const { tags } = defineProps<{

@@ -33,13 +33,7 @@ watch(current, (song: Song | null) => {
     onplayerror: (id, err) => console.error(id, err),
 
     onplay: () => {
-      console.log(stored_timestamp.value);
-      console.log(current.value);
-      console.log(player.value);
-      console.log(Number.parseInt(stored_timestamp.value.split("_")[1] ?? "0"));
-
       if (stored_timestamp.value?.startsWith(current.value?.id ?? "")) {
-        console.log("syncing to", stored_timestamp.value, stored_timestamp.value.split("_"));
         player.value?.seek(Number.parseInt(stored_timestamp.value.split("_")[1] ?? "0"));
       }
     },

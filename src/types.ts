@@ -1,6 +1,6 @@
 export type SocketMessage = {
-  kind: "Song" | "Sync";
-  payload: Song | number;
+  kind: "Song" | "Sync" | "SessionId";
+  payload: Song | number | string;
 };
 
 export type Song = {

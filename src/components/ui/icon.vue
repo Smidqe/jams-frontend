@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import * as icons from "lucide-vue-next";
+import { computed } from "vue";
 
 const props = defineProps({
   name: {
@@ -13,6 +13,9 @@ const props = defineProps({
   defaultClass: String,
 });
 
+// @ts-expect-error
+// biome-ignore lint/correctness/noUnusedVariables: Biome doesn't understand vue properly yet :/
+// biome-ignore lint/performance/noDynamicNamespaceImportAccess: Boo
 const icon = computed(() => icons[props.name]);
 </script>
 
