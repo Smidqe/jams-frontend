@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useIntervalFn, useWebSocket } from "@vueuse/core";
+import { useWebSocket } from "@vueuse/core";
 import AudioPlayer from "./components/AudioPlayer.vue";
 import { useStore } from "./stores/counter";
 import type { SocketMessage, Song } from "./types";
@@ -20,12 +20,9 @@ const { status, open, close } = useWebSocket(`${import.meta.env.VITE_JAMS_URL}/w
   autoConnect: false,
   immediate: false,
   onConnected: (ws) => {
-    console.log("connected");
     connected.value = true;
   },
   onMessage: (ws, msg) => {
-    console.log(msg);
-
     const data = JSON.parse(msg.data) as SocketMessage;
     const handler = handlers.get(data.kind);
 
