@@ -3,7 +3,7 @@
 //biome-ignore-all lint/correctness/noUnusedImports: They are needed */
 
 import type { Tags } from "@/types";
-import LabeledIcon from "./ui/LabeledIcon.vue";
+import { Music2Icon, User, Disc3 } from "lucide-vue-next";
 
 const { tags } = defineProps<{
   tags: Tags;
@@ -12,16 +12,19 @@ const { tags } = defineProps<{
 
 <template>
   <div class="flex flex-col gap-1">
-    <LabeledIcon icon="Music" :label="tags.title" />
+    <div class="flex items-center gap-1">
+      <Music2Icon />
+      <span> {{ tags.title ?? "Unknown title" }}</span>
+    </div>
     <div class="flex items-center gap-4">
-      <LabeledIcon class="text-sm" :size="20" icon="SquareUser" :label="tags.artist" />
-      <LabeledIcon
-        v-if="tags.album"
-        class="text-sm"
-        :size="20"
-        icon="DiscAlbum"
-        :label="tags.album"
-      />
+      <div class="flex items-center gap-1">
+        <User :size="20" />
+        <span class="text-sm"> {{ tags.artist ?? "Unknown artist" }}</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <Disc3 :size="20" />
+        <span class="text-sm"> {{ tags.album ?? "Unknown album" }}</span>
+      </div>
     </div>
   </div>
 </template>

@@ -1,28 +1,33 @@
 <script setup lang="ts">
 import { useWebSocket } from "@vueuse/core";
 import AudioPlayer from "./components/AudioPlayer.vue";
-import { useStore } from "./stores/counter";
 import type { SocketMessage, Song } from "./types";
 import SongArtwork from "./components/SongArtwork.vue";
-import { ref } from "vue";
-import { Button } from "@/components/ui/button";
 import ModeToggle from "./components/ModeToggle.vue";
+import { useSessionStore } from "./stores/session";
 
-const connected = ref(false);
-
-const { setSong, setTimestamp } = useStore();
+const { setSong, setTimestamp, setSessionId } = useSessionStore();
 const handlers = new Map<string, (arg: SocketMessage) => void>([
   ["Song", (arg) => setSong(arg.payload as Song)],
   ["Sync", (arg) => setTimestamp(arg.payload as number)],
+  ["SessionId", (arg) => setSessionId(arg.payload as string)],
 ]);
 
-const { status, open, close } = useWebSocket(`${import.meta.env.VITE_JAMS_URL}/ws`, {
+const ws = useWebSocket(`${import.meta.env.VITE_JAMS_URL}/ws`, {
   autoConnect: false,
-  immediate: false,
-  onConnected: (ws) => {
-    connected.value = true;
+  immediate: true,
+  onDisconnected: (_ws, ev) => {
+    //it should never close, but it does for whatever fucking reason
+    console.error(ev);
+
+    //just reopen that hole, bastard
+    ws.open();
   },
-  onMessage: (ws, msg) => {
+  onError: (_ws, ev) => {
+    console.error(ev);
+    ws.open();
+  },
+  onMessage: (_ws, msg) => {
     const data = JSON.parse(msg.data) as SocketMessage;
     const handler = handlers.get(data.kind);
 
@@ -34,10 +39,7 @@ const { status, open, close } = useWebSocket(`${import.meta.env.VITE_JAMS_URL}/w
 </script>
 
 <template>
-  <div v-if="!connected">
-    <Button label="Connect" @click="open" />
-  </div>
-  <div v-else class="flex flex-col items-center gap-2 h-screen">
+  <div class="flex flex-col items-center gap-2 h-screen">
     <ModeToggle class="justify-end" />
     <SongArtwork class="w-flex-1 h-full" />
     <AudioPlayer class="w-full flex-1" />

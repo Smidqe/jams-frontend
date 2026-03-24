@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { Progress } from "@/components/ui/progress";
-import { useStore } from "@/stores/counter";
+import { useSessionStore } from "@/stores/session";
 import { useInterval } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import { ref, watch } from "vue";
 
-const store = useStore();
-const { timestamp: sync, current } = storeToRefs(store);
+const { current_timestamp, current_song } = storeToRefs(useSessionStore());
 
 const progress = ref(0);
 const timestamp = ref(0);
@@ -15,22 +14,22 @@ const { reset } = useInterval(1000, {
   callback: () => {
     timestamp.value += 1;
 
-    if (current.value) {
-      progress.value = Math.min((timestamp.value / current.value?.duration) * 100, 100);
+    if (current_song.value) {
+      progress.value = Math.min((timestamp.value / current_song.value?.duration) * 100, 100);
     }
   },
   controls: true,
 });
 
-watch(sync, () => {
-  const diff = Math.abs(sync.value - timestamp.value);
+watch(current_timestamp, () => {
+  const diff = Math.abs(current_timestamp.value - timestamp.value);
 
   if (diff > 5) {
-    timestamp.value = sync.value;
+    timestamp.value = current_timestamp.value;
   }
 });
 
-watch(current, () => {
+watch(current_song, () => {
   reset();
 });
 
@@ -55,7 +54,7 @@ const formatTime = (s: number) => {
   <div class="text-xs flex flex-row items-center gap-2">
     <span>{{ formatTime(timestamp) }}</span>
     <span>/</span>
-    <span v-if="current">{{ formatTime(current.duration) }}</span>
+    <span v-if="current_song">{{ formatTime(current_song.duration) }}</span>
     <Progress v-model="progress" class="h-1" />
   </div>
 </template>

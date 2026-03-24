@@ -11,8 +11,6 @@ import { Moon, Sun } from "lucide-vue-next";
 
 // Pass { disableTransition: false } to enable transitions
 const mode = useColorMode();
-
-console.log(mode);
 </script>
 
 <template>

@@ -1,18 +1,18 @@
+import type { Song } from "@/types";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-export const useSessionStore = defineStore(
-  "session",
-  () => {
-    const timestamp = ref<string>("");
-    const volume = ref<number>(10);
+export const useSessionStore = defineStore("session", () => {
+  const session_id = ref<string | null>(null);
 
-    const setTimestamp = (song_id: string, ts: number) => (timestamp.value = `${song_id}_${ts}`);
-    const setVolume = (vol: number) => (volume.value = vol);
+  //song related
+  const current_song = ref<Song | null>(null);
+  const current_timestamp = ref<number>(0);
 
-    return { timestamp, volume, setTimestamp, setVolume };
-  },
-  {
-    persist: true,
-  },
-);
+  //setters
+  const setSessionId = (id: string) => (session_id.value = id);
+  const setSong = (song: Song) => (current_song.value = song);
+  const setTimestamp = (ts: number) => (current_timestamp.value = ts);
+
+  return { session_id, current_song, current_timestamp, setSessionId, setSong, setTimestamp };
+});

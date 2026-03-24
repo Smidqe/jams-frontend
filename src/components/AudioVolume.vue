@@ -2,11 +2,19 @@
 import { Slider } from "./ui/slider";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import { useSettingsStore } from "@/stores/settings";
 import { Volume, Volume1, Volume2 } from "lucide-vue-next";
-import { computed } from "vue";
+import { storeToRefs } from "pinia";
+import { computed, ref, watch } from "vue";
 
-const model = defineModel<number[]>();
-const volume = computed(() => model.value?.[0] ?? 0);
+const settings = useSettingsStore();
+const { volume } = storeToRefs(settings);
+
+const model = ref<number[]>([volume.value]);
+
+console.log(model);
+
+watch(model, () => settings.setVolume(model.value[0]));
 </script>
 <template>
   <Popover>
