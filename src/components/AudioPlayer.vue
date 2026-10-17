@@ -1,59 +1,35 @@
 <script setup lang="ts">
-import type { Song } from "@/types";
-import { Howl } from "howler";
+import { Play } from "lucide-vue-next";
 import { storeToRefs } from "pinia";
-import { ref, watch } from "vue";
+import { computed } from "vue";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import AudioVolume from "./AudioVolume.vue";
-import AudioProgress from "./AudioProgress.vue";
-import SongInfo from "./SongInfo.vue";
+import { usePlayerStore } from "@/stores/player";
 import { useSessionStore } from "@/stores/session";
 import { useSettingsStore } from "@/stores/settings";
+import AudioProgress from "./AudioProgress.vue";
+import AudioVolume from "./AudioVolume.vue";
+import SongInfo from "./SongInfo.vue";
 
-const settings = useSettingsStore();
-const session = useSessionStore();
+const player = usePlayerStore();
+const { volume } = storeToRefs(useSettingsStore());
+const { currentSong } = storeToRefs(useSessionStore());
+const { status, elapsed } = storeToRefs(player);
 
-const { volume } = storeToRefs(settings);
-const { current_song, current_timestamp, session_id } = storeToRefs(session);
-
-const player = ref<Howl | null>(null);
-
-watch(current_song, (song: Song | null) => {
-  player.value?.unload();
-  player.value = new Howl({
-    src: [`${import.meta.env.VITE_JAMS_URL}/stream?id=${song?.id}&sid=${session_id.value}`],
-    format: ["ogg"],
-    volume: volume.value / 100,
-    html5: true,
-    autoplay: true,
-    preload: "metadata",
-    onloaderror: (id, err) => console.error(id, err),
-    onplayerror: (id, err) => console.error(id, err),
-  });
-});
-
-watch(current_timestamp, () => {
-  if (!player.value) {
-    return;
-  }
-
-  if (Math.abs(player.value.seek() - current_timestamp.value) > 5) {
-    player.value.seek(current_timestamp.value);
-  }
-});
-
-watch(volume, () => {
-  player.value?.volume(volume.value / 100);
-});
+const duration = computed(() => (currentSong.value?.durationMs ?? 0) / 1000);
 </script>
 <template>
   <Card class="p-0 py-1 px-2 rounded-none gap-1">
-    <AudioProgress />
+    <AudioProgress :elapsed="elapsed" :duration="duration" />
     <div class="flex flex-row justify-between items-center">
-      <SongInfo v-if="current_song" :tags="current_song.tags" />
-      <div>
+      <SongInfo v-if="currentSong" :tags="currentSong.tags" />
+      <div class="flex items-center gap-1">
+        <Button v-if="status === 'blocked'" size="icon" @click="player.play()">
+          <Play />
+          <span class="sr-only">Start playback</span>
+        </Button>
+        <span v-else-if="status === 'error'" class="text-xs text-destructive">Playback failed</span>
         <AudioVolume v-model="volume" />
-        <AudioVolume />
       </div>
     </div>
   </Card>

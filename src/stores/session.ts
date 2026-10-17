@@ -1,18 +1,48 @@
-import type { Song } from "@/types";
+import type { WebSocketStatus } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import type { JamEvent, Position, Song } from "@/types";
 
 export const useSessionStore = defineStore("session", () => {
-  const session_id = ref<string | null>(null);
+  const sessionId = ref<string | null>(null);
+  const connection = ref<WebSocketStatus>("CONNECTING");
 
   //song related
-  const current_song = ref<Song | null>(null);
-  const current_timestamp = ref<number>(0);
+  const currentSong = ref<Song | null>(null);
+  const position = ref<Position | null>(null);
 
-  //setters
-  const setSessionId = (id: string) => (session_id.value = id);
-  const setSong = (song: Song) => (current_song.value = song);
-  const setTimestamp = (ts: number) => (current_timestamp.value = ts);
+  const setConnection = (status: WebSocketStatus) => (connection.value = status);
 
-  return { session_id, current_song, current_timestamp, setSessionId, setSong, setTimestamp };
+  const setPosition = (pos: Position) => {
+    if (pos.songId !== currentSong.value?.id) {
+      return;
+    }
+
+    position.value = pos;
+  };
+
+  //the same song is re-sent if we fall behind, only resync the position then
+  const setSong = (song: Song, pos: Position) => {
+    if (song.id !== currentSong.value?.id) {
+      currentSong.value = song;
+    }
+
+    setPosition(pos);
+  };
+
+  const handleEvent = (event: JamEvent) => {
+    switch (event.kind) {
+      case "SessionId":
+        sessionId.value = event.sessionId;
+        break;
+      case "Song":
+        setSong(event.song, event.position);
+        break;
+      case "Sync":
+        setPosition(event.position);
+        break;
+    }
+  };
+
+  return { sessionId, connection, currentSong, position, setConnection, handleEvent };
 });

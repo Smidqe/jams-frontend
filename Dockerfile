@@ -1,29 +1,29 @@
-ARG NODE_VERSION=24.12.0-alpine
-ARG NGINX_VERSION=alpine3.22
+ARG NODE_VERSION=24.22.0-alpine
+ARG NGINX_VERSION=alpine3.24
 
 
 FROM node:${NODE_VERSION} AS builder
 
-ARG VITE_JAMS_URL
-ENV VITE_JAMS_URL=$VITE_JAMS_URL
-
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-COPY . .
-
 RUN corepack enable
-RUN yarn install
+
+COPY package.json yarn.lock .yarnrc.yml ./
+RUN yarn install --immutable
+
+COPY . .
 RUN yarn build
 
 FROM nginxinc/nginx-unprivileged:${NGINX_VERSION} AS runner
 
+ENV JAMS_BACKEND_URL=http://host.docker.internal:8080
+
 COPY nginx.conf /etc/nginx/nginx.conf
+COPY jams.conf.template /etc/nginx/templates/jams.conf.template
 COPY --chown=nginx:nginx --from=builder /app/dist /usr/share/nginx/html
 
 USER nginx
 
 EXPOSE 8080
 
-ENTRYPOINT ["nginx", "-c", "/etc/nginx/nginx.conf"]
-CMD ["-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,7 +1,14 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
   "formatter": {
-    "enabled": true
+    "enabled": true,
+    "indentStyle": "space",
+    "lineWidth": 100
   },
   "linter": {
     "enabled": true
@@ -9,9 +16,28 @@
   "assist": {
     "enabled": true
   },
+  "html": {
+    "experimentalFullSupportEnabled": true
+  },
   "css": {
     "parser": {
       "tailwindDirectives": true
     }
-  }
+  },
+  "json": {
+    "formatter": {
+      "enabled": false
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["src/components/ui/**"],
+      "linter": {
+        "rules": {
+          "style": { "useVueMultiWordComponentNames": "off" },
+          "a11y": { "useHeadingContent": "off" }
+        }
+      }
+    }
+  ]
 }

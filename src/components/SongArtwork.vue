@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { useSessionStore } from "@/stores/session";
 import { storeToRefs } from "pinia";
-import { ref, watch } from "vue";
+import { artworkUrl } from "@/lib/api";
+import { useSessionStore } from "@/stores/session";
 
-const { current_song } = storeToRefs(useSessionStore());
-const url = ref("");
-
-watch(
-  current_song,
-  () => (url.value = `${import.meta.env.VITE_JAMS_URL}/artwork?id=${current_song?.value?.id}`),
-);
+const { currentSong } = storeToRefs(useSessionStore());
 </script>
 <template>
-  <img v-if="current_song" :src="url" class="rounded-2xl object-contain" />
+  <img
+    v-if="currentSong"
+    :src="artworkUrl(currentSong.id)"
+    :alt="currentSong.tags.ALBUM ?? 'Album artwork'"
+    class="rounded-2xl object-contain"
+  />
 </template>

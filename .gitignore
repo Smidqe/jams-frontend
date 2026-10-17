@@ -26,6 +26,9 @@ coverage
 
 *.tsbuildinfo
 
+# rollup-plugin-visualizer output
+stats.html
+
 .eslintcache
 
 # Cypress

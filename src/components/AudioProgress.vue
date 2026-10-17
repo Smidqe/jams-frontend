@@ -1,43 +1,18 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { Progress } from "@/components/ui/progress";
-import { useSessionStore } from "@/stores/session";
-import { useInterval } from "@vueuse/core";
-import { storeToRefs } from "pinia";
-import { ref, watch } from "vue";
 
-const { current_timestamp, current_song } = storeToRefs(useSessionStore());
+//both in seconds
+const props = defineProps<{
+  elapsed: number;
+  duration: number;
+}>();
 
-const progress = ref(0);
-const timestamp = ref(0);
-
-const { reset } = useInterval(1000, {
-  callback: () => {
-    timestamp.value += 1;
-
-    if (current_song.value) {
-      progress.value = Math.min((timestamp.value / current_song.value?.duration) * 100, 100);
-    }
-  },
-  controls: true,
-});
-
-watch(current_timestamp, () => {
-  const diff = Math.abs(current_timestamp.value - timestamp.value);
-
-  if (diff > 5) {
-    timestamp.value = current_timestamp.value;
-  }
-});
-
-watch(current_song, () => {
-  reset();
-});
+const progress = computed(() =>
+  props.duration > 0 ? Math.min((props.elapsed / props.duration) * 100, 100) : 0,
+);
 
 const formatTime = (s: number) => {
-  if (s === undefined) {
-    return "00:00";
-  }
-
   const parts = [Math.floor(s / 60 / 60), Math.floor((s / 60) % 60), Math.floor(s % 60)];
 
   //ignore hourse if not present, songs are usually in minutes
@@ -52,9 +27,11 @@ const formatTime = (s: number) => {
 
 <template>
   <div class="text-xs flex flex-row items-center gap-2">
-    <span>{{ formatTime(timestamp) }}</span>
-    <span>/</span>
-    <span v-if="current_song">{{ formatTime(current_song.duration) }}</span>
-    <Progress v-model="progress" class="h-1" />
+    <template v-if="duration > 0">
+      <span>{{ formatTime(elapsed) }}</span>
+      <span>/</span>
+      <span>{{ formatTime(duration) }}</span>
+    </template>
+    <Progress :model-value="progress" class="h-1" />
   </div>
 </template>
