@@ -1,6 +1,6 @@
 import { useEventListener, useMediaControls } from "@vueuse/core";
 import { defineStore } from "pinia";
-import { computed, ref, shallowRef, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { streamUrl } from "@/lib/api";
 import { expectedPosition, shouldSeek } from "@/lib/sync";
 import { useSessionStore } from "./session";
@@ -13,8 +13,8 @@ export const usePlayerStore = defineStore("player", () => {
   const session = useSessionStore();
   const settings = useSettingsStore();
 
-  const audio = shallowRef(new Audio());
-  audio.value.preload = "metadata";
+  const audio = new Audio();
+  audio.preload = "metadata";
 
   const { currentTime, playing, volume } = useMediaControls(audio);
 
@@ -30,7 +30,7 @@ export const usePlayerStore = defineStore("player", () => {
   });
 
   const sync = () => {
-    const el = audio.value;
+    const el = audio;
 
     if (!session.position || el.readyState < HTMLMediaElement.HAVE_METADATA) {
       return;
@@ -45,7 +45,7 @@ export const usePlayerStore = defineStore("player", () => {
 
   const play = async () => {
     try {
-      await audio.value.play();
+      await audio.play();
       blocked.value = false;
     } catch (err) {
       if (err instanceof DOMException && err.name === "NotAllowedError") {
@@ -62,7 +62,7 @@ export const usePlayerStore = defineStore("player", () => {
   watch(
     () => [session.currentSong?.id, session.sessionId] as const,
     ([id, sid]) => {
-      const el = audio.value;
+      const el = audio;
       blocked.value = false;
       failed.value = false;
 
@@ -80,7 +80,7 @@ export const usePlayerStore = defineStore("player", () => {
   watch(() => session.position, sync);
   useEventListener(audio, "playing", sync);
   useEventListener(audio, "error", () => {
-    console.error("audio error", audio.value.error);
+    console.error("audio error", audio.error);
     failed.value = true;
   });
 
@@ -90,5 +90,5 @@ export const usePlayerStore = defineStore("player", () => {
     { immediate: true },
   );
 
-  return { status, elapsed: currentTime, play };
+  return { status, elapsed: computed(() => currentTime.value), play };
 });

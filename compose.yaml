@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      - JAMS_BACKEND_URL=http://host.docker.internal:8080
+      - JAMS_BACKEND_URL=http://host.docker.internal:9000
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:

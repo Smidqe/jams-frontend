@@ -12,7 +12,14 @@ export default defineConfig(({ mode }) => {
   const backend = loadEnv(mode, process.cwd(), "").JAMS_BACKEND_URL || "http://localhost:8080";
 
   return {
-    plugins: [vue(), vueDevTools(), basicSsl(), tailwindcss(), visualizer()],
+    plugins: [
+      //everything uses <script setup>, so the Options API code can be dropped from the bundle
+      vue({ features: { optionsAPI: false } }),
+      vueDevTools(),
+      basicSsl(),
+      tailwindcss(),
+      visualizer(),
+    ],
     resolve: {
       alias: {
         "@": path.resolve(import.meta.dirname, "./src"),

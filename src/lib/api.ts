@@ -1,4 +1,5 @@
 import type { JamEvent, Position, Tags } from "@/types";
+import { isNumber, isObject, isString } from "./utils";
 
 export const wsUrl = () => {
   const url = new URL("/ws", window.location.href);
@@ -9,18 +10,15 @@ export const wsUrl = () => {
 export const streamUrl = (id: string, sid: string) => `/stream?${new URLSearchParams({ id, sid })}`;
 export const artworkUrl = (id: string) => `/artwork?${new URLSearchParams({ id })}`;
 
-type Obj = Record<string, unknown>;
+const parseTags = (v: unknown): Tags => {
+  if (!isObject(v)) {
+    return {};
+  }
 
-const isObject = (v: unknown): v is Obj => typeof v === "object" && v !== null;
-const isString = (v: unknown): v is string => typeof v === "string";
-const isNumber = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
-
-const parseTags = (v: unknown): Tags =>
-  isObject(v)
-    ? Object.fromEntries(
-        Object.entries(v).filter((entry): entry is [string, string] => isString(entry[1])),
-      )
-    : {};
+  return Object.fromEntries(
+    Object.entries(v).filter((entry): entry is [string, string] => isString(entry[1])),
+  );
+};
 
 const parsePosition = (v: unknown, now: number): Position | null => {
   if (!isObject(v) || !isString(v.id) || !isNumber(v.position_ms) || !isNumber(v.server_time_ms)) {

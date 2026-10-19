@@ -14,6 +14,10 @@ RUN yarn install --immutable
 COPY . .
 RUN yarn build
 
+#precompress with max level once, nginx serves the .gz files via gzip_static
+RUN find dist -type f \( -name '*.js' -o -name '*.css' -o -name '*.html' -o -name '*.svg' \) \
+    -exec sh -c 'gzip -9 -c "$1" > "$1.gz"' _ {} \;
+
 FROM nginxinc/nginx-unprivileged:${NGINX_VERSION} AS runner
 
 ENV JAMS_BACKEND_URL=http://host.docker.internal:8080

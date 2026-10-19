@@ -9,13 +9,18 @@ const props = defineProps<{
 }>();
 
 const progress = computed(() =>
-  props.duration > 0 ? Math.min((props.elapsed / props.duration) * 100, 100) : 0,
+  Math.min(
+    //current position
+    props.duration > 0 ? Math.min((props.elapsed / props.duration) * 100, 100) : 0,
+    //absolute max
+    props.duration,
+  ),
 );
 
 const formatTime = (s: number) => {
   const parts = [Math.floor(s / 60 / 60), Math.floor((s / 60) % 60), Math.floor(s % 60)];
 
-  //ignore hourse if not present, songs are usually in minutes
+  //ignore hours if not present, songs are usually in minutes
   //but allow it if present
   if (parts[0] === 0) {
     parts.shift();

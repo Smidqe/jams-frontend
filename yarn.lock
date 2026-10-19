@@ -1733,13 +1733,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"defu@npm:^6.1.4":
-  version: 6.1.4
-  resolution: "defu@npm:6.1.4"
-  checksum: 10c0/2d6cc366262dc0cb8096e429368e44052fdf43ed48e53ad84cc7c9407f890301aa5fcb80d0995abaaf842b3949f154d060be4160f7a46cb2bc2f7726c81526f5
-  languageName: node
-  linkType: hard
-
 "defu@npm:^6.1.5":
   version: 6.1.7
   resolution: "defu@npm:6.1.7"
@@ -2132,7 +2125,6 @@ __metadata:
     clsx: "npm:^2.1.1"
     lucide-vue-next: "npm:^1.0.0"
     pinia: "npm:^4.1.0"
-    pinia-plugin-persistedstate: "npm:^4.7.1"
     reka-ui: "npm:^2.11.0"
     rollup-plugin-visualizer: "npm:^7.1.1"
     tailwind-merge: "npm:^3.7.0"
@@ -2785,26 +2777,6 @@ __metadata:
   version: 4.0.7
   resolution: "picomatch@npm:4.0.7"
   checksum: 10c0/beb6ae02c43ae44e84883b90830196d9046b1726ead292adcf7f57945e0bb0d992d68563d87e03b484b6f3c9a5c6defda7523477f047d7f0e663f126cc01787f
-  languageName: node
-  linkType: hard
-
-"pinia-plugin-persistedstate@npm:^4.7.1":
-  version: 4.7.1
-  resolution: "pinia-plugin-persistedstate@npm:4.7.1"
-  dependencies:
-    defu: "npm:^6.1.4"
-  peerDependencies:
-    "@nuxt/kit": ">=3.0.0"
-    "@pinia/nuxt": ">=0.10.0"
-    pinia: ">=3.0.0"
-  peerDependenciesMeta:
-    "@nuxt/kit":
-      optional: true
-    "@pinia/nuxt":
-      optional: true
-    pinia:
-      optional: true
-  checksum: 10c0/1d1d0dae9bfa256f0fa0b89286af35b1320198626882b6774b7d37a065f6a256844665c1b30e37a7b6af689f6858a501828020a6b3edfa8dedd9484df85c4fdd
   languageName: node
   linkType: hard
 

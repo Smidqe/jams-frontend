@@ -12,7 +12,7 @@ useJamSocket();
   <div class="flex flex-col items-center gap-2 h-screen">
     <div class="flex items-center gap-2">
       <ConnectionStatus />
-      <ModeToggle class="justify-end" />
+      <ModeToggle />
     </div>
     <SongArtwork class="h-full" />
     <AudioPlayer class="w-full flex-1" />

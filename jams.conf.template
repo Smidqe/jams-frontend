@@ -41,8 +41,7 @@ server {
     # only these filenames are content-hashed, everything else (favicon, ...) uses nginx's default revalidation
     location /assets/ {
         access_log off;
-        expires 1y;
-        add_header Cache-Control "public, immutable";
+        add_header Cache-Control "public, max-age=31536000, immutable";
         add_header X-Content-Type-Options nosniff;
     }
 

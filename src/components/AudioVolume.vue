@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import { Volume, Volume1, Volume2 } from "lucide-vue-next";
-import { computed } from "vue";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Slider } from "./ui/slider";
 
+//0-100
 const volume = defineModel<number>({ required: true });
-const sliderValue = computed({
-  get: () => [volume.value],
-  set: ([value]) => (volume.value = value ?? volume.value),
-});
 </script>
 <template>
   <Popover>
@@ -22,7 +17,16 @@ const sliderValue = computed({
       </Button>
     </PopoverTrigger>
     <PopoverContent>
-      <Slider v-model="sliderValue" :max="100" :step="1" :min="0" />
+      <!-- native range instead of reka Slider, keyboard and screen reader support come built in -->
+      <input
+        v-model.number="volume"
+        type="range"
+        min="0"
+        max="100"
+        step="1"
+        aria-label="Volume"
+        class="block w-full cursor-pointer accent-primary"
+      />
     </PopoverContent>
   </Popover>
 </template>
