@@ -1,16 +1,20 @@
-export type SocketMessage = {
-  kind: "Song" | "Sync" | "SessionId";
-  payload: Song | number | string;
-};
+//keys are uppercase (TITLE, ARTIST, ALBUM, ...), any of them can be missing
+export type Tags = Partial<Record<string, string>>;
 
 export type Song = {
-  duration: number;
   id: string;
+  durationMs: number;
   tags: Tags;
 };
 
-export type Tags = {
-  artist: string;
-  album: string;
-  title: string;
+export type Position = {
+  songId: string;
+  positionMs: number;
+  serverTimeMs: number;
+  receivedAt: number;
 };
+
+export type JamEvent =
+  | { kind: "SessionId"; sessionId: string }
+  | { kind: "Song"; song: Song; position: Position }
+  | { kind: "Sync"; position: Position };

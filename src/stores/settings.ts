@@ -1,15 +1,20 @@
+import { useLocalStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed } from "vue";
+import { isNumber } from "@/lib/utils";
 
-export const useSettingsStore = defineStore(
-  "settings",
-  () => {
-    const volume = ref<number>(10);
-    const setVolume = (vol: number) => (volume.value = vol);
+const DEFAULT_VOLUME = 10;
+const clampVolume = (v: unknown) => (isNumber(v) ? Math.min(Math.max(v, 0), 100) : DEFAULT_VOLUME);
 
-    return { volume, setVolume };
-  },
-  {
-    persist: true,
-  },
-);
+export const useSettingsStore = defineStore("settings", () => {
+  //same key and shape pinia-plugin-persistedstate used, so saved settings carry over
+  const stored = useLocalStorage("settings", { volume: DEFAULT_VOLUME }, { mergeDefaults: true });
+
+  //localStorage can contain anything, so clamp on the way in and out
+  const volume = computed({
+    get: () => clampVolume(stored.value.volume),
+    set: (v: number) => (stored.value = { ...stored.value, volume: clampVolume(v) }),
+  });
+
+  return { volume };
+});

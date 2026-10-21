@@ -1,9 +1,6 @@
 <script setup lang="ts">
-//biome-ignore-all lint/correctness/noUnusedVariables: They are needed */
-//biome-ignore-all lint/correctness/noUnusedImports: They are needed */
-
+import { Disc3, Music2Icon, User } from "lucide-vue-next";
 import type { Tags } from "@/types";
-import { Music2Icon, User, Disc3 } from "lucide-vue-next";
 
 const { tags } = defineProps<{
   tags: Tags;
@@ -14,16 +11,16 @@ const { tags } = defineProps<{
   <div class="flex flex-col gap-1">
     <div class="flex items-center gap-1">
       <Music2Icon />
-      <span> {{ tags.title ?? "Unknown title" }}</span>
+      <span> {{ tags.TITLE ?? "Unknown title" }}</span>
     </div>
     <div class="flex items-center gap-4">
       <div class="flex items-center gap-1">
         <User :size="20" />
-        <span class="text-sm"> {{ tags.artist ?? "Unknown artist" }}</span>
+        <span class="text-sm"> {{ tags.ARTIST ?? "Unknown artist" }}</span>
       </div>
       <div class="flex items-center gap-1">
         <Disc3 :size="20" />
-        <span class="text-sm"> {{ tags.album ?? "Unknown album" }}</span>
+        <span class="text-sm"> {{ tags.ALBUM ?? "Unknown album" }}</span>
       </div>
     </div>
   </div>

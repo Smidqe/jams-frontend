@@ -1,32 +1,30 @@
 <script setup lang="ts">
-import { Slider } from "./ui/slider";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
-import { useSettingsStore } from "@/stores/settings";
 import { Volume, Volume1, Volume2 } from "lucide-vue-next";
-import { storeToRefs } from "pinia";
-import { computed, ref, watch } from "vue";
+import { Button } from "@/components/ui/button";
+import AppPopover from "./AppPopover.vue";
 
-const settings = useSettingsStore();
-const { volume } = storeToRefs(settings);
-
-const model = ref<number[]>([volume.value]);
-
-console.log(model);
-
-watch(model, () => settings.setVolume(model.value[0]));
+//0-100
+const volume = defineModel<number>({ required: true });
 </script>
 <template>
-  <Popover>
-    <PopoverTrigger>
-      <Button size="icon" variant="outline">
+  <AppPopover placement="top-end" content-class="w-72">
+    <template #trigger="trigger">
+      <Button size="icon" variant="outline" v-bind="trigger">
         <Volume v-if="volume === 0" />
-        <Volume1 v-if="volume > 0 && volume <= 50" />
-        <Volume2 v-if="volume > 50" />
+        <Volume1 v-else-if="volume <= 50" />
+        <Volume2 v-else />
+        <span class="sr-only">Volume</span>
       </Button>
-    </PopoverTrigger>
-    <PopoverContent>
-      <Slider v-model="model" :max="100" :step="1" :min="0" />
-    </PopoverContent>
-  </Popover>
+    </template>
+    <!-- native range instead of reka Slider, keyboard and screen reader support come built in -->
+    <input
+      v-model.number="volume"
+      type="range"
+      min="0"
+      max="100"
+      step="1"
+      aria-label="Volume"
+      class="block w-full cursor-pointer accent-primary"
+    />
+  </AppPopover>
 </template>

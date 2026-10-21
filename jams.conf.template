@@ -1,0 +1,40 @@
+server {
+    listen       8080;
+    server_name  localhost;
+
+    root   /usr/share/nginx/html;
+    index  index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # always revalidate so a new deploy is picked up, the hashed assets it points to are cached forever
+    location = /index.html {
+        add_header Cache-Control "no-cache";
+    }
+
+    # backend under api/ (ws, stream, artwork), the trailing / strips the prefix.
+    # in production the outer nginx routes /jams/api/ to the backend itself, this is for running the image standalone.
+    # ${JAMS_BACKEND_URL} is filled in by the image's envsubst step on start
+    location /api/ {
+        proxy_pass ${JAMS_BACKEND_URL}/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        # audio stream, and the socket can be quiet between songs
+        proxy_buffering off;
+        proxy_read_timeout 1h;
+        proxy_send_timeout 1h;
+    }
+
+    # only these filenames are content-hashed, everything else (favicon, ...) uses nginx's default revalidation
+    location /assets/ {
+        access_log off;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        add_header X-Content-Type-Options nosniff;
+    }
+
+    error_page 404 /index.html;
+}
