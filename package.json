@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": ">=26.12.1"
   },
   "scripts": {
     "dev": "vite",
@@ -44,7 +44,7 @@
   },
   "packageManager": "yarn@4.18.1",
   "volta": {
-    "node": "24.22.0",
+    "node": "26.12.1",
     "yarn": "4.18.1"
   }
 }
