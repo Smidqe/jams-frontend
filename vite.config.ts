@@ -28,10 +28,13 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
+      //same /api/ prefix as production, stripped before it reaches the backend
       proxy: {
-        "/ws": { target: backend, ws: true },
-        "/stream": backend,
-        "/artwork": backend,
+        "/api/": {
+          target: backend,
+          ws: true,
+          rewrite: (p) => p.replace(/^\/api/, ""),
+        },
       },
     },
     build: {

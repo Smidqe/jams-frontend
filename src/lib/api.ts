@@ -1,18 +1,19 @@
 import type { JamEvent, Position, Tags } from "@/types";
 import { isNumber, isObject, isString } from "./utils";
 
-//relative to where the app is served (BASE_URL is "./" in builds), so a sub-path like /jams/ works
-const BASE = import.meta.env.BASE_URL;
+//backend lives under api/ next to the app (BASE_URL is "./" in builds), e.g. /jams/api/ws in production.
+//the server's nginx routes /jams/api/ to the backend, locally the vite proxy or the image's nginx does it
+const API = `${import.meta.env.BASE_URL}api/`;
 
 export const wsUrl = () => {
-  const url = new URL(`${BASE}ws`, window.location.href);
+  const url = new URL(`${API}ws`, window.location.href);
   url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
   return url.toString();
 };
 
 export const streamUrl = (id: string, sid: string) =>
-  `${BASE}stream?${new URLSearchParams({ id, sid })}`;
-export const artworkUrl = (id: string) => `${BASE}artwork?${new URLSearchParams({ id })}`;
+  `${API}stream?${new URLSearchParams({ id, sid })}`;
+export const artworkUrl = (id: string) => `${API}artwork?${new URLSearchParams({ id })}`;
 
 const parseTags = (v: unknown): Tags => {
   if (!isObject(v)) {

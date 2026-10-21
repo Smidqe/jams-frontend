@@ -14,28 +14,19 @@ server {
         add_header Cache-Control "no-cache";
     }
 
-    # backend, ${JAMS_BACKEND_URL} is filled in by the image's envsubst step on start
-    location = /ws {
-        proxy_pass ${JAMS_BACKEND_URL};
+    # backend under api/ (ws, stream, artwork), the trailing / strips the prefix.
+    # in production the outer nginx routes /jams/api/ to the backend itself, this is for running the image standalone.
+    # ${JAMS_BACKEND_URL} is filled in by the image's envsubst step on start
+    location /api/ {
+        proxy_pass ${JAMS_BACKEND_URL}/;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
+        proxy_set_header Connection $connection_upgrade;
         proxy_set_header Host $host;
-        # the socket can be quiet between songs, don't let nginx close it
-        proxy_read_timeout 1h;
-        proxy_send_timeout 1h;
-    }
-
-    location = /stream {
-        proxy_pass ${JAMS_BACKEND_URL};
-        proxy_set_header Host $host;
+        # audio stream, and the socket can be quiet between songs
         proxy_buffering off;
         proxy_read_timeout 1h;
-    }
-
-    location = /artwork {
-        proxy_pass ${JAMS_BACKEND_URL};
-        proxy_set_header Host $host;
+        proxy_send_timeout 1h;
     }
 
     # only these filenames are content-hashed, everything else (favicon, ...) uses nginx's default revalidation
