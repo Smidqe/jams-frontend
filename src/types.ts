@@ -7,7 +7,6 @@ export type Song = {
   tags: Tags;
 };
 
-//where a song was on the server at serverTimeMs, receivedAt is the local Date.now() on arrival
 export type Position = {
   songId: string;
   positionMs: number;

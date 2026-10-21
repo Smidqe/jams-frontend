@@ -9,12 +9,7 @@ const props = defineProps<{
 }>();
 
 const progress = computed(() =>
-  Math.min(
-    //current position
-    props.duration > 0 ? Math.min((props.elapsed / props.duration) * 100, 100) : 0,
-    //absolute max
-    props.duration,
-  ),
+  props.duration > 0 ? Math.min((props.elapsed / props.duration) * 100, 100) : 0,
 );
 
 const formatTime = (s: number) => {
@@ -26,14 +21,14 @@ const formatTime = (s: number) => {
     parts.shift();
   }
 
-  return parts.join(":").replace(/\b(\d)\b/g, "0$1");
+  return parts.map((p) => String(p).padStart(2, "0")).join(":");
 };
 </script>
 
 <template>
   <div class="text-xs flex flex-row items-center gap-2">
     <template v-if="duration > 0">
-      <span>{{ formatTime(elapsed) }}</span>
+      <span>{{ formatTime(Math.min(elapsed, duration)) }}</span>
       <span>/</span>
       <span>{{ formatTime(duration) }}</span>
     </template>

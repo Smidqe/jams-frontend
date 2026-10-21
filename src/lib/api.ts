@@ -1,14 +1,18 @@
 import type { JamEvent, Position, Tags } from "@/types";
 import { isNumber, isObject, isString } from "./utils";
 
+//relative to where the app is served (BASE_URL is "./" in builds), so a sub-path like /jams/ works
+const BASE = import.meta.env.BASE_URL;
+
 export const wsUrl = () => {
-  const url = new URL("/ws", window.location.href);
+  const url = new URL(`${BASE}ws`, window.location.href);
   url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
   return url.toString();
 };
 
-export const streamUrl = (id: string, sid: string) => `/stream?${new URLSearchParams({ id, sid })}`;
-export const artworkUrl = (id: string) => `/artwork?${new URLSearchParams({ id })}`;
+export const streamUrl = (id: string, sid: string) =>
+  `${BASE}stream?${new URLSearchParams({ id, sid })}`;
+export const artworkUrl = (id: string) => `${BASE}artwork?${new URLSearchParams({ id })}`;
 
 const parseTags = (v: unknown): Tags => {
   if (!isObject(v)) {
@@ -42,7 +46,9 @@ export const parseMessage = (raw: string, now = Date.now()): JamEvent | null => 
     return null;
   }
 
+  //fucked up response
   if (!isObject(data)) {
+    console.warn("[api]: Response was not an object", data);
     return null;
   }
 

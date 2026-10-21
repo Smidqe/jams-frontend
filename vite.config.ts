@@ -12,6 +12,8 @@ export default defineConfig(({ mode }) => {
   const backend = loadEnv(mode, process.cwd(), "").JAMS_BACKEND_URL || "http://localhost:8080";
 
   return {
+    //relative urls, so the same build works at the root and under a sub-path like /jams/
+    base: "./",
     plugins: [
       //everything uses <script setup>, so the Options API code can be dropped from the bundle
       vue({ features: { optionsAPI: false } }),
