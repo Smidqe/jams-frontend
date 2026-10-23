@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Progress } from "@/components/ui/progress";
 
 //both in seconds
 const props = defineProps<{
@@ -32,6 +31,12 @@ const formatTime = (s: number) => {
       <span>/</span>
       <span>{{ formatTime(duration) }}</span>
     </template>
-    <Progress :model-value="progress" class="h-1" />
+    <!-- native progress: the element itself is the track (firefox), the pseudo-elements style chrome/safari -->
+    <progress
+      :value="progress"
+      max="100"
+      aria-label="Song progress"
+      class="h-1 w-full appearance-none overflow-hidden rounded-full bg-primary/20 [&::-moz-progress-bar]:bg-primary [&::-webkit-progress-bar]:bg-transparent [&::-webkit-progress-value]:bg-primary"
+    />
   </div>
 </template>
