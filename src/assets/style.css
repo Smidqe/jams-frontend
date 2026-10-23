@@ -109,4 +109,27 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* the only progress bar is the song's, the element is the track and the pseudo-elements the fill */
+  progress {
+    @apply h-1 w-full appearance-none overflow-hidden rounded-full bg-primary/20;
+  }
+  progress::-webkit-progress-bar {
+    @apply bg-transparent;
+  }
+  /* separate rules: a browser drops the whole rule if it doesn't know one of the selectors */
+  progress::-webkit-progress-value {
+    @apply bg-primary;
+  }
+  progress::-moz-progress-bar {
+    @apply bg-primary;
+  }
+}
+
+@utility icon-button {
+  @apply grid size-9 place-items-center rounded-md border bg-background hover:bg-accent hover:text-accent-foreground disabled:opacity-50 [&_svg]:size-4;
+}
+
+@utility icon-button-primary {
+  @apply grid size-9 place-items-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 [&_svg]:size-4;
 }

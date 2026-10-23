@@ -11,7 +11,7 @@ const { tags } = defineProps<{
   <div class="[&_svg]:mr-1 [&_svg]:inline [&_svg]:align-text-bottom">
     <p class="truncate"><Music2Icon :size="20" />{{ tags.TITLE ?? "Unknown title" }}</p>
     <p class="truncate text-sm">
-      <User :size="16" />{{ tags.ARTIST ?? "Unknown artist" }} <Disc3 :size="16" class="ml-3" />{{
+      <User :size="16" />{{ tags.ARTIST ?? "Unknown artist" }} · <Disc3 :size="16" />{{
         tags.ALBUM ?? "Unknown album"
       }}
     </p>

@@ -29,13 +29,12 @@ const time = computed(
 </script>
 
 <template>
-  <div class="text-xs flex flex-row items-center gap-2">
+  <div class="flex items-center gap-2 text-xs">
     <span v-if="duration > 0" class="shrink-0 tabular-nums">{{ time }}</span>
     <progress
       :value="progress"
       max="100"
       aria-label="Song progress"
-      class="h-1 w-full appearance-none overflow-hidden rounded-full bg-primary/20 [&::-moz-progress-bar]:bg-primary [&::-webkit-progress-bar]:bg-transparent [&::-webkit-progress-value]:bg-primary"
     />
   </div>
 </template>

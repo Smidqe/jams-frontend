@@ -2,7 +2,6 @@
 import { useColorMode } from "@vueuse/core";
 import { Monitor, Moon, Sun } from "lucide-vue-next";
 import { computed } from "vue";
-import { iconButton } from "@/lib/styles";
 
 type Mode = "light" | "dark" | "auto";
 
@@ -18,7 +17,7 @@ const cycle = () => (store.value = NEXT[current.value]);
 <template>
   <button
     type="button"
-    :class="iconButton"
+    class="icon-button"
     :title="`Theme: ${LABELS[current]}`"
     :aria-label="`Theme: ${LABELS[current]}, click to change`"
     @click="cycle"

@@ -10,6 +10,6 @@ const { currentSong } = storeToRefs(useSessionStore());
     v-if="currentSong"
     :src="artworkUrl(currentSong.id)"
     :alt="currentSong.tags.ALBUM ?? 'Album artwork'"
-    class="rounded-2xl object-contain"
+    class="object-contain"
   />
 </template>
