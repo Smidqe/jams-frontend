@@ -22,15 +22,16 @@ const formatTime = (s: number) => {
 
   return parts.map((p) => String(p).padStart(2, "0")).join(":");
 };
+
+const time = computed(
+  () => `${formatTime(Math.min(props.elapsed, props.duration))} / ${formatTime(props.duration)}`,
+);
 </script>
 
 <template>
   <div class="text-xs flex flex-row items-center gap-2">
-    <template v-if="duration > 0">
-      <span>{{ formatTime(Math.min(elapsed, duration)) }}</span>
-      <span>/</span>
-      <span>{{ formatTime(duration) }}</span>
-    </template>
+    <!-- tabular-nums keeps the width steady while the time ticks -->
+    <span v-if="duration > 0" class="shrink-0 tabular-nums">{{ time }}</span>
     <!-- native progress: the element itself is the track (firefox), the pseudo-elements style chrome/safari -->
     <progress
       :value="progress"

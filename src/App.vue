@@ -8,9 +8,11 @@ useJamSocket();
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-2 h-screen">
+  <!-- h-dvh: 100vh on phones includes the space behind the browser's address bar -->
+  <div class="flex h-dvh flex-col items-center gap-2">
     <ConnectionStatus />
-    <SongArtwork class="h-full" />
-    <AudioPlayer class="w-full flex-1" />
+    <!-- artwork takes the space that's left (min-h-0 lets it shrink), player keeps its own height at the bottom -->
+    <SongArtwork class="min-h-0 w-full flex-1" />
+    <AudioPlayer class="mt-auto w-full" />
   </div>
 </template>
