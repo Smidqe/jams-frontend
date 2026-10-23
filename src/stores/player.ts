@@ -8,11 +8,9 @@ import { useSettingsStore } from "./settings";
 
 export type PlayerStatus = "idle" | "loading" | "blocked" | "paused" | "playing" | "error";
 
-//a failing stream is reloaded after 1s, 2s and 4s before giving up
 const MAX_RETRIES = 3;
 const RETRY_BASE_MS = 1000;
 
-//owns the audio element, plays whatever the session says and keeps it in sync with the server
 export const usePlayerStore = defineStore("player", () => {
   const session = useSessionStore();
   const settings = useSettingsStore();
@@ -25,9 +23,7 @@ export const usePlayerStore = defineStore("player", () => {
   //autoplay was refused by the browser, needs a click to start
   const blocked = ref(false);
   const failed = ref(false);
-  //audio.paused isn't reactive, mirrored from the play/pause events
   const paused = ref(true);
-  //waiting for an automatic retry, shown as loading rather than paused
   const retrying = ref(false);
 
   let retries = 0;
@@ -39,8 +35,6 @@ export const usePlayerStore = defineStore("player", () => {
     if (blocked.value) return "blocked";
     if (playing.value) return "playing";
     if (retrying.value) return "loading";
-    //paused by the user (media keys, browser controls), but not at the end of a song,
-    //the next Song message starts the new one
     if (paused.value && !ended.value) return "paused";
     return "loading";
   });
@@ -83,7 +77,6 @@ export const usePlayerStore = defineStore("player", () => {
     failed.value = true;
   };
 
-  //forget retries and errors, used when the source changes or the user retries manually
   const resetRetries = () => {
     clearTimeout(retryTimer);
     retries = 0;
@@ -107,13 +100,11 @@ export const usePlayerStore = defineStore("player", () => {
     }
   }
 
-  //manual retry from the UI after the automatic ones ran out
   const retry = () => {
     resetRetries();
     reload();
   };
 
-  //a new session id (after a reconnect) needs a new stream too
   watch(
     () => [session.currentSong?.id, session.sessionId] as const,
     ([id, sid]) => {

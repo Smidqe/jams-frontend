@@ -30,9 +30,7 @@ const time = computed(
 
 <template>
   <div class="text-xs flex flex-row items-center gap-2">
-    <!-- tabular-nums keeps the width steady while the time ticks -->
     <span v-if="duration > 0" class="shrink-0 tabular-nums">{{ time }}</span>
-    <!-- native progress: the element itself is the track (firefox), the pseudo-elements style chrome/safari -->
     <progress
       :value="progress"
       max="100"

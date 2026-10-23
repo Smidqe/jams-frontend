@@ -19,8 +19,6 @@ const { status, elapsed } = storeToRefs(player);
 const duration = computed(() => (currentSong.value?.durationMs ?? 0) / 1000);
 </script>
 <template>
-  <!-- one wrapping row: progress takes a full line, song info fills what's left, controls stay right.
-       justify-end keeps the controls on the right before a song (and SongInfo) arrives -->
   <div
     class="flex flex-wrap items-center justify-end gap-1 border bg-card px-2 py-1 text-card-foreground shadow-sm"
   >

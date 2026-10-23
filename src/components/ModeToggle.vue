@@ -9,7 +9,6 @@ type Mode = "light" | "dark" | "auto";
 const LABELS: Record<Mode, string> = { light: "Light", dark: "Dark", auto: "System" };
 const NEXT: Record<Mode, Mode> = { light: "dark", dark: "auto", auto: "light" };
 
-//store is the chosen option, not the resolved theme, so "auto" can be shown as its own state
 const { store } = useColorMode();
 const current = computed(() => store.value as Mode);
 
