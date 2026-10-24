@@ -1,4 +1,4 @@
-ARG NODE_VERSION=24.22.0-alpine
+ARG NODE_VERSION=26.12.1-alpine
 ARG NGINX_VERSION=alpine3.24
 
 
@@ -6,7 +6,8 @@ FROM node:${NODE_VERSION} AS builder
 
 WORKDIR /app
 
-RUN corepack enable
+#node 25+ no longer ships corepack, install it before enabling
+RUN npm install -g corepack && corepack enable
 
 COPY package.json yarn.lock .yarnrc.yml ./
 RUN yarn install --immutable

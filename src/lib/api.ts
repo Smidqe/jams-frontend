@@ -7,7 +7,6 @@ const API = `${import.meta.env.BASE_URL}api/`;
 
 export const wsUrl = () => {
   const url = new URL(`${API}ws`, window.location.href);
-  url.protocol = url.protocol === "https:" ? "wss:" : "ws:";
   return url.toString();
 };
 

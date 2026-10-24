@@ -1,4 +1,4 @@
-//keys are uppercase (TITLE, ARTIST, ALBUM, ...), any of them can be missing
+//keys are uppercase (TITLE, ARTIST, ALBUM, ...)
 export type Tags = Partial<Record<string, string>>;
 
 export type Song = {

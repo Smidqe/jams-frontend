@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Progress } from "@/components/ui/progress";
 
 //both in seconds
 const props = defineProps<{
@@ -23,15 +22,19 @@ const formatTime = (s: number) => {
 
   return parts.map((p) => String(p).padStart(2, "0")).join(":");
 };
+
+const time = computed(
+  () => `${formatTime(Math.min(props.elapsed, props.duration))} / ${formatTime(props.duration)}`,
+);
 </script>
 
 <template>
-  <div class="text-xs flex flex-row items-center gap-2">
-    <template v-if="duration > 0">
-      <span>{{ formatTime(Math.min(elapsed, duration)) }}</span>
-      <span>/</span>
-      <span>{{ formatTime(duration) }}</span>
-    </template>
-    <Progress :model-value="progress" class="h-1" />
+  <div class="flex items-center gap-2 text-xs">
+    <span v-if="duration > 0" class="shrink-0 tabular-nums">{{ time }}</span>
+    <progress
+      :value="progress"
+      max="100"
+      aria-label="Song progress"
+    />
   </div>
 </template>

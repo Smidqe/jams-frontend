@@ -28,16 +28,5 @@
     "formatter": {
       "enabled": false
     }
-  },
-  "overrides": [
-    {
-      "includes": ["src/components/ui/**"],
-      "linter": {
-        "rules": {
-          "style": { "useVueMultiWordComponentNames": "off" },
-          "a11y": { "useHeadingContent": "off" }
-        }
-      }
-    }
-  ]
+  }
 }

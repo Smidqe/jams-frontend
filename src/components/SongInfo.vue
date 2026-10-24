@@ -8,20 +8,12 @@ const { tags } = defineProps<{
 </script>
 
 <template>
-  <div class="flex flex-col gap-1">
-    <div class="flex items-center gap-1">
-      <Music2Icon />
-      <span> {{ tags.TITLE ?? "Unknown title" }}</span>
-    </div>
-    <div class="flex items-center gap-4">
-      <div class="flex items-center gap-1">
-        <User :size="20" />
-        <span class="text-sm"> {{ tags.ARTIST ?? "Unknown artist" }}</span>
-      </div>
-      <div class="flex items-center gap-1">
-        <Disc3 :size="20" />
-        <span class="text-sm"> {{ tags.ALBUM ?? "Unknown album" }}</span>
-      </div>
-    </div>
+  <div class="[&_svg]:mr-1 [&_svg]:inline [&_svg]:align-text-bottom">
+    <p class="truncate"><Music2Icon :size="20" />{{ tags.TITLE ?? "Unknown title" }}</p>
+    <p class="truncate text-sm">
+      <User :size="16" />{{ tags.ARTIST ?? "Unknown artist" }} · <Disc3 :size="16" />{{
+        tags.ALBUM ?? "Unknown album"
+      }}
+    </p>
   </div>
 </template>

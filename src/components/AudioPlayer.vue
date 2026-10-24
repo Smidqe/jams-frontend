@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { Play } from "lucide-vue-next";
+import { Info, ListMusic, Play, RotateCcw } from "lucide-vue-next";
 import { storeToRefs } from "pinia";
 import { computed } from "vue";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { usePlayerStore } from "@/stores/player";
 import { useSessionStore } from "@/stores/session";
 import { useSettingsStore } from "@/stores/settings";
 import AudioProgress from "./AudioProgress.vue";
 import AudioVolume from "./AudioVolume.vue";
+import ModeToggle from "./ModeToggle.vue";
 import SongInfo from "./SongInfo.vue";
 
 const player = usePlayerStore();
@@ -19,18 +18,39 @@ const { status, elapsed } = storeToRefs(player);
 const duration = computed(() => (currentSong.value?.durationMs ?? 0) / 1000);
 </script>
 <template>
-  <Card class="p-0 py-1 px-2 rounded-none gap-1">
-    <AudioProgress :elapsed="elapsed" :duration="duration" />
-    <div class="flex flex-row justify-between items-center">
-      <SongInfo v-if="currentSong" :tags="currentSong.tags" />
-      <div class="flex items-center gap-1">
-        <Button v-if="status === 'blocked'" size="icon" @click="player.play()">
-          <Play />
-          <span class="sr-only">Start playback</span>
-        </Button>
-        <span v-else-if="status === 'error'" class="text-xs text-destructive">Playback failed</span>
-        <AudioVolume v-model="volume" />
-      </div>
-    </div>
-  </Card>
+  <div
+    class="flex flex-wrap items-center justify-end gap-1 border bg-card px-2 py-1"
+  >
+    <AudioProgress :elapsed="elapsed" :duration="duration" class="basis-full" />
+    <SongInfo v-if="currentSong" :tags="currentSong.tags" class="min-w-0 flex-1" />
+    <button
+      v-if="status === 'blocked' || status === 'paused'"
+      type="button"
+      class="icon-button-primary"
+      :aria-label="status === 'blocked' ? 'Start playback' : 'Resume playback'"
+      :title="status === 'blocked' ? 'Start playback' : 'Resume playback'"
+      @click="player.play()"
+    >
+      <Play />
+    </button>
+    <button
+      v-else-if="status === 'error'"
+      type="button"
+      class="icon-button-primary"
+      aria-label="Playback failed, retry"
+      title="Playback failed, retry"
+      @click="player.retry()"
+    >
+      <RotateCcw />
+    </button>
+    <!-- placeholders, disabled until song metadata and playlist exist -->
+    <button type="button" class="icon-button" aria-label="Song info (coming soon)" disabled>
+      <Info />
+    </button>
+    <button type="button" class="icon-button" aria-label="Playlist (coming soon)" disabled>
+      <ListMusic />
+    </button>
+    <ModeToggle />
+    <AudioVolume v-model="volume" />
+  </div>
 </template>
